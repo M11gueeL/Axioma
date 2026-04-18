@@ -2,8 +2,8 @@
 # Backend: Django (axioma-api)
 # =========================
 axioma-api/venv/
-axioma-api/__pycache__/
-axioma-api/*.py[cod]
+axioma-api/**/__pycache__/
+axioma-api/**/*.py[cod]
 axioma-api/.env
 axioma-api/db.sqlite3
 

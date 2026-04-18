@@ -1,0 +1,16 @@
+# =========================
+# Backend: Django (axioma-api)
+# =========================
+axioma-api/venv/
+axioma-api/__pycache__/
+axioma-api/*.py[cod]
+axioma-api/.env
+axioma-api/db.sqlite3
+
+# =========================
+# Frontend: React (axioma-app)
+# =========================
+axioma-app/node_modules/
+axioma-app/dist/
+axioma-app/build/
+axioma-app/.env

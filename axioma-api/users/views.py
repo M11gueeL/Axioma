@@ -37,3 +37,17 @@ class UserViewSet(viewsets.ModelViewSet):
         instance.is_deleted = True
         instance.is_active = False # También desactivamos el login de Django
         instance.save()
+
+    def perform_update(self, serializer):
+        """
+        Interceptamos la actualización antes de guardar en base de datos.
+        Evitamos que un USER normal pueda cambiarse el rol a ADMIN.
+        """
+        user = self.request.user
+        
+        # Si no es ADMIN, eliminamos silenciosamente cualquier intento de cambiar el rol
+        if user.role != 'ADMIN' and 'role' in serializer.validated_data:
+            serializer.validated_data.pop('role')
+            
+        # Guardamos los datos (con el rol filtrado si fue necesario)
+        serializer.save()

@@ -1,15 +1,12 @@
-from django.urls import path
-from rest_framework import generics
-from .serializers import RegisterSerializer
-from django.contrib.auth import get_user_model
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import RegisterView, UserViewSet
 
-User = get_user_model()
-
-# Una vista rápida para el registro
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
+# El router crea automáticamente el GET, POST, PUT, PATCH y DELETE
+router = DefaultRouter()
+router.register(r'manage', UserViewSet, basename='user-manage')
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
+    path('', include(router.urls)),
 ]

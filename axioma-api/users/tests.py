@@ -1,3 +1,11 @@
-from django.test import TestCase
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import get_user_model
+from .serializers import RegisterSerializer
 
-# Create your tests here.
+User = get_user_model()
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,) # Permite que cualquiera se registre sin estar logueado
+    serializer_class = RegisterSerializer

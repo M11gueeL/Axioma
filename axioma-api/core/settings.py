@@ -89,12 +89,20 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f"postgres://{env('DB_USER')}:{env('DB_PASSWORD')}@{env('DB_HOST')}:{env('DB_PORT')}/{env('DB_NAME')}",
-        conn_max_age=600
-    )
-}
+# Verificamos si existe la variable de Render
+if env('DATABASE_URL', default=None):
+    # MODO PRODUCCIÓN (Render): Usa la URL gigante
+    DATABASES = {
+        'default': dj_database_url.parse(env('DATABASE_URL'), conn_max_age=600)
+    }
+else:
+    # MODO LOCAL (Tu PC): Construye la URL con las variables separadas del .env
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=f"postgres://{env('DB_USER')}:{env('DB_PASSWORD')}@{env('DB_HOST')}:{env('DB_PORT')}/{env('DB_NAME')}",
+            conn_max_age=600
+        )
+    }
 
 
 # Password validation

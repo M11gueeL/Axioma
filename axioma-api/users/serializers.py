@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from .models import LoginHistory
 
 User = get_user_model()
 
@@ -21,3 +22,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Usamos create_user para que Django encripte la contraseña automáticamente
         user = User.objects.create_user(**validated_data)
         return user
+
+class LoginHistorySerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = LoginHistory
+        fields = ['id', 'username', 'ip_address', 'user_agent', 'created_at']

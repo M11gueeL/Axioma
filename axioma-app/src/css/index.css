@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* Esta es la línea mágica que desvincula el modo oscuro del sistema */
+@custom-variant dark (&:where(.dark, .dark *));

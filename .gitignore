@@ -1,5 +1,5 @@
 # =========================
-# Backend: Django (axioma-api)
+# Backend
 # =========================
 axioma-api/venv/
 axioma-api/**/__pycache__/
@@ -7,10 +7,34 @@ axioma-api/**/*.py[cod]
 axioma-api/.env
 axioma-api/db.sqlite3
 
-# =========================
-# Frontend: React (axioma-app)
-# =========================
+# =============================================================================
+# FRONTEND
+# =============================================================================
 axioma-app/node_modules/
 axioma-app/dist/
+axioma-app/dist-ssr/
 axioma-app/build/
 axioma-app/.env
+axioma-app/.env.local
+axioma-app/.env.*.local
+
+# =============================================================================
+# CONFIGURACIÓN GLOBAL (Archivos de Sistema y Editores)
+# =============================================================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.local
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*

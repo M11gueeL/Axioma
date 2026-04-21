@@ -52,12 +52,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist', 
+    'corsheaders',
     'users',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -165,3 +167,12 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # El token de rescate dura 1 día
     'AUTH_HEADER_TYPES': ('Bearer',),               # El prefijo que usaremos en Postman/React
 }
+
+# ==========================================
+# CONFIGURACIÓN DE CORS
+# ==========================================
+# Permite que cualquier dominio (como tu localhost de React) consuma la API
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Permite que el frontend envíe cookies o tokens de autorización
+CORS_ALLOW_CREDENTIALS = True

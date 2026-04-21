@@ -8,3 +8,6 @@ export const loginUser = (credentials) =>
 
 export const logoutUser = () => 
     api.post('/logout/', {});
+
+export const getProfile = () => 
+    api.get('/profile/');

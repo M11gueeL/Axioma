@@ -1,4 +1,36 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap');
 
-/* Esta es la línea mágica que desvincula el modo oscuro del sistema */
-@custom-variant dark (&:where(.dark, .dark *));
+:root {
+	--axioma-text: #0f172a;
+	--axioma-bg: #f6fbfd;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	font-family: 'Manrope', sans-serif;
+	color: var(--axioma-text);
+	background-color: var(--axioma-bg);
+}
+
+h1, h2, h3, h4 {
+	font-family: 'Sora', sans-serif;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+

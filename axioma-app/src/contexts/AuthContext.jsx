@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser, logoutUser } from '../api/authApi';
-import { getProfile } from '../api/authApi';
+import { loginUser, logoutUser, getProfile } from '../api/authApi';
 
 const AuthContext = createContext();
 
@@ -8,17 +7,37 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Función para cargar los datos del usuario si hay un token válido
+    const clearAuthStorage = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user_role');
+    };
+
+    const syncStoredRole = (profile) => {
+        if (profile?.role) {
+            localStorage.setItem('user_role', profile.role);
+            return;
+        }
+
+        localStorage.removeItem('user_role');
+    };
+
+    const fetchProfile = async () => {
+        const { data } = await getProfile();
+        syncStoredRole(data);
+        setUser(data);
+        return data;
+    };
+
     const loadUser = async () => {
         const token = localStorage.getItem('access_token');
         if (token) {
             try {
-                
-                const role = localStorage.getItem('user_role');
-                setUser({ role }); 
+                await fetchProfile();
             } catch (error) {
                 console.error("Error al cargar usuario:", error);
-                logout();
+                clearAuthStorage();
+                setUser(null);
             }
         }
         setLoading(false);
@@ -31,29 +50,41 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const { data } = await loginUser(credentials);
+
+            if (!data?.access || !data?.refresh) {
+                throw new Error('Respuesta de autenticacion incompleta');
+            }
+
             localStorage.setItem('access_token', data.access);
             localStorage.setItem('refresh_token', data.refresh);
-            localStorage.setItem('user_role', data.user.role); 
-            
-            setUser(data.user);
+            await fetchProfile();
+
             return { success: true };
         } catch (error) {
+            const apiMessage =
+                error.response?.data?.detail ||
+                error.response?.data?.non_field_errors?.[0];
+
+            clearAuthStorage();
+            setUser(null);
+
             return { 
                 success: false, 
-                message: error.response?.data?.detail || "Error en las credenciales" 
+                message: apiMessage || "Error en las credenciales" 
             };
         }
     };
 
     const logout = async () => {
         try {
-            await logoutUser();
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (refreshToken) {
+                await logoutUser(refreshToken);
+            }
         } catch (error) {
             console.error("Logout fallido en servidor", error);
         } finally {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('user_role');
+            clearAuthStorage();
             setUser(null);
             window.location.href = '/login';
         }
@@ -64,6 +95,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
+        reloadProfile: fetchProfile,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'ADMIN'
     };

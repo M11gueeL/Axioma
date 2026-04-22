@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
-from .serializers import RegisterSerializer, UserSerializer, LoginHistorySerializer
+from .serializers import RegisterSerializer, UserSerializer, LoginHistorySerializer, ProfileSerializer
 from .permissions import IsAdminOrOwner
 from .models import LoginHistory
 
@@ -15,6 +15,16 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,) 
     serializer_class = RegisterSerializer
+
+
+class ProfileView(generics.RetrieveAPIView):
+    """Devuelve el perfil del usuario autenticado."""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        return self.request.user
 
 # 2. El CRUD completo de Usuarios
 class UserViewSet(viewsets.ModelViewSet):

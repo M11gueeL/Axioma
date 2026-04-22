@@ -13,7 +13,11 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('access_token');
-        if (token) {
+        const requestUrl = config.url || '';
+        const authExcludedPaths = ['/login/', '/register/', '/refresh/'];
+        const shouldSkipAuthHeader = authExcludedPaths.some((path) => requestUrl.endsWith(path));
+
+        if (token && !shouldSkipAuthHeader) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -27,9 +31,14 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        if (!originalRequest) return Promise.reject(error);
+
+        const requestUrl = originalRequest.url || '';
+        const authRetryExcludedPaths = ['/login/', '/register/', '/refresh/', '/logout/'];
+        const shouldSkipRefresh = authRetryExcludedPaths.some((path) => requestUrl.endsWith(path));
 
         // Si el error es 401 (Unauthorized) y no hemos intentado renovar aún
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry && !shouldSkipRefresh) {
             originalRequest._retry = true;
 
             try {
@@ -45,6 +54,7 @@ api.interceptors.response.use(
                 localStorage.setItem('access_token', data.access);
                 
                 // Actualizamos el header de la petición original y reintentamos
+                originalRequest.headers = originalRequest.headers || {};
                 originalRequest.headers.Authorization = `Bearer ${data.access}`;
                 return api(originalRequest);
 

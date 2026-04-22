@@ -29,3 +29,31 @@ class LoginHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = LoginHistory
         fields = ['id', 'username', 'ip_address', 'user_agent', 'created_at']
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """Serializer del perfil autenticado con visibilidad condicional del rol."""
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'birth_date',
+            'role',
+            'date_joined',
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        # Para usuarios no ADMIN ocultamos el campo role en el endpoint /profile.
+        if request and getattr(request.user, 'role', None) != User.Roles.ADMIN:
+            data.pop('role', None)
+
+        return data

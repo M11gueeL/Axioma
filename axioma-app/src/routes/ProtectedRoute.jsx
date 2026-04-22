@@ -7,7 +7,7 @@ const ProtectedRoute = () => {
     if (loading) return <div className="min-h-screen flex items-center justify-center bg-stone-50">Cargando...</div>;
 
     // Si no está logueado, lo mandamos a iniciar sesión
-    return isAuthenticated ? <Outlet /> : <Navigate to="/auth/login" replace />;
+    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

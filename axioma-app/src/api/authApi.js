@@ -6,8 +6,8 @@ export const registerUser = (userData) =>
 export const loginUser = (credentials) => 
     api.post('/login/', credentials);
 
-export const logoutUser = () => 
-    api.post('/logout/', {});
+export const logoutUser = (refreshToken) => 
+    api.post('/logout/', { refresh: refreshToken });
 
 export const getProfile = () => 
     api.get('/profile/');

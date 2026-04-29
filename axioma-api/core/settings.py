@@ -33,6 +33,25 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
+# CONFIGRACIÓN DE BACKBLAZE B2
+AWS_ACCES_KEY_ID = os.environ.get('B2_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('B2_APP_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('B2_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.environ.get('B2_ENDPOINT')
+
+# Saca la región del endpoint
+if AWS_S3_ENDPOINT_URL:
+    AWS_S3_REGION_NAME = AWS_S3_ENDPOINT_URL.split('.')[1]
+else:
+    AWS_S3_REGION_NAME = None
+
+# Firma las URLs para que React pueda leer el bucket privado
+AWS_QUERYSTRING_AUTH = True
+AWS_QUERYSTRING_EXPIRE = 3600  # Las URLs firmadas durarán 1 hora
+
+# Le dice a Django que mande los ImageField a la nube
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -53,6 +72,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist', 
     'corsheaders',
+    'storages',
     'users',
 ]
 

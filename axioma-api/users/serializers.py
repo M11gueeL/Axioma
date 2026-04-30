@@ -6,19 +6,29 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     """Para mostrar datos del usuario"""
+    email = serializers.EmailField(required=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'birth_date', 'date_joined']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'birth_date', 'profile_image']
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Para registrar nuevos usuarios"""
     password = serializers.CharField(write_only=True)
+    password_confirmation = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'phone_number', 'birth_date']
+        fields = ['username', 'email', 'password', 'password_confirmation']
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirmation']:
+            raise serializers.ValidationError({"password": "Passwords do not match."})
+        return attrs
 
     def create(self, validated_data):
+        # Quitamos password_confirmation porque create_user no lo usa
+        validated_data.pop('password_confirmation')
         # Usamos create_user para que Django encripte la contraseña automáticamente
         user = User.objects.create_user(**validated_data)
         return user

@@ -1,11 +1,11 @@
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, viewsets, status, permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from .serializers import RegisterSerializer, UserSerializer, LoginHistorySerializer, ProfileSerializer
-from .permissions import IsAdminOrOwner
+from .permissions import IsAdminOrOwner, IsOwnerOrReadOnly
 from .models import LoginHistory
 
 User = get_user_model()
@@ -13,9 +13,14 @@ User = get_user_model()
 # 1. Vista de Registro (La dejamos igual, cualquiera puede registrarse)
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    permission_classes = (AllowAny,) 
+    permission_classes = [permissions.AllowAny] 
     serializer_class = RegisterSerializer
 
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    """Permite leer y actualizar el perfil de un usuario. Solo el dueño puede editarlo."""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
 class ProfileView(generics.RetrieveAPIView):
     """Devuelve el perfil del usuario autenticado."""

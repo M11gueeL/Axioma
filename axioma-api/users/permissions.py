@@ -23,3 +23,17 @@ class IsAdminOrOwner(permissions.BasePermission):
         
         # Si es un usuario normal, el objeto consultado/modificado debe ser él mismo
         return obj == request.user
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Object-level permission to only allow owners of an object to edit it.
+    Assumes the model instance has an `owner` attribute, or `obj == request.user` if it's the User instance itself.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions are only allowed to the owner.
+        return obj == request.user

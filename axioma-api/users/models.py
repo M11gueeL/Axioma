@@ -45,6 +45,7 @@ class User(AbstractUser):
     # Auditoría
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
+    is_email_verified = models.BooleanField(default=False)
 
     profile_image = models.ImageField(upload_to=get_profile_image_path, null=True, blank=True)
 

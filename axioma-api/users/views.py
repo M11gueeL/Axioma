@@ -4,7 +4,11 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
-from .serializers import RegisterSerializer, UserSerializer, LoginHistorySerializer, ProfileSerializer
+from .serializers import (
+    RegisterSerializer, UserSerializer, LoginHistorySerializer, ProfileSerializer,
+    PasswordResetRequestSerializer, PasswordResetConfirmSerializer, ChangePasswordSerializer,
+    VerifyEmailSerializer
+)
 from .permissions import IsAdminOrOwner, IsOwnerOrReadOnly
 from .models import LoginHistory
 
@@ -74,6 +78,20 @@ class UserViewSet(viewsets.ModelViewSet):
 # --- 1. Custom Login (Para registrar el historial) ---
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
+        # Bloquear el acceso si el usuario no ha verificado su correo
+        username = request.data.get('username')
+        if username:
+            try:
+                user = User.objects.get(username=username)
+                if not user.is_email_verified:
+                    return Response(
+                        {"detail": "Please verify your email address before logging in."}, 
+                        status=status.HTTP_401_UNAUTHORIZED
+                    )
+            except User.DoesNotExist:
+                # Si no existe, dejamos que TokenObtainPairView lance su error normal
+                pass
+                
         response = super().post(request, *args, **kwargs)
         
         # Si el login fue exitoso (código 200), guardamos el historial
@@ -110,3 +128,70 @@ class LoginHistoryView(generics.ListAPIView):
         if user.role == 'ADMIN':
             return LoginHistory.objects.all().order_by('-created_at')
         return LoginHistory.objects.filter(user=user).order_by('-created_at')
+
+# --- 4. Flujo de Reseteo de Contraseñas ---
+class PasswordResetRequestView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = PasswordResetRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # La lógica de envío está en el save() del serializer
+        serializer.save()
+        # Siempre retornamos éxito por seguridad (evitar user enumeration)
+        return Response(
+            {"detail": "If an account exists with that email, we've sent you a password reset link."},
+            status=status.HTTP_200_OK
+        )
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = PasswordResetConfirmSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # La lógica de cambio de clave está en el save() del serializer
+        serializer.save()
+        return Response(
+            {"detail": "Password has been reset successfully. You may now login."},
+            status=status.HTTP_200_OK
+        )
+
+# --- 5. Flujo de Cambio de Contraseña Interno ---
+class ChangePasswordView(generics.UpdateAPIView):
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            return Response(
+                {"detail": "Password updated successfully."},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# --- 6. Flujo de Verificación de Email ---
+class VerifyEmailView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = VerifyEmailSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # La lógica de validación del token está en el save()
+        serializer.save()
+        
+        return Response(
+            {"detail": "Email verified successfully. You may now login."},
+            status=status.HTTP_200_OK
+        )

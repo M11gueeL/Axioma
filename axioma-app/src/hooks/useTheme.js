@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 export const useTheme = () => {
-  // Inicializa leyendo el localStorage o usando 'light' por defecto
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  // Inicializa leyendo el localStorage o usando 'dark' por defecto para dar ese look moderno
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
     const root = window.document.documentElement;

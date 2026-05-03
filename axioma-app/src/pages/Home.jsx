@@ -1,69 +1,93 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { Heart, MessagesSquare, Sparkles, Send, Users, ArrowRight } from 'lucide-react';
 
 const Home = () => {
     const { isAuthenticated } = useAuth();
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-linear-to-br from-amber-50 via-sky-50 to-cyan-100 px-4 py-10 sm:px-6 lg:px-8">
-            <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-amber-300/30 blur-3xl animate-pulse" />
-            <div className="pointer-events-none absolute bottom-0 -left-20 w-96 h-96 rounded-full bg-sky-300/30 blur-3xl animate-pulse" />
-
-            <div className="max-w-5xl mx-auto relative z-10">
-                <div className="rounded-3xl border border-white/50 bg-white/80 backdrop-blur-xl p-8 md:p-14 shadow-[0_20px_90px_-30px_rgba(2,132,199,0.45)]">
-                    <span className="inline-flex items-center rounded-full border border-cyan-200 bg-cyan-50 px-4 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-700">
-                        Plataforma Operativa
-                    </span>
-
-                    <h1 className="mt-5 text-4xl md:text-6xl font-black leading-tight text-slate-900">
-                        Gestiona tu equipo con
-                        <span className="block text-cyan-700">claridad y control en Axioma</span>
+        <div className="relative min-h-screen overflow-hidden transition-colors duration-300">
+            {/* Decorative Orbs */}
+            <div className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-[var(--color-primary)]/10 dark:bg-[var(--color-primary)]/5 blur-3xl animate-pulse" />
+            <div className="pointer-events-none absolute bottom-0 -left-64 w-[600px] h-[600px] rounded-full bg-emerald-300/10 dark:bg-emerald-900/10 blur-3xl animate-pulse animation-delay-300" />
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
+                {/* Hero Section */}
+                <div className="text-center max-w-4xl mx-auto mb-20 animate-fade-up">
+                    <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-100 dark:bg-[var(--color-primary)]/10 text-emerald-800 dark:text-[#6AFA9F] text-sm font-bold uppercase tracking-widest mb-8 border border-emerald-200 dark:border-[var(--color-primary)]/20 shadow-md dark:shadow-[0_0_20px_rgba(84,247,143,0.15)] transition-colors">
+                        <Sparkles className="w-4 h-4" />
+                        <span>Bienvenido a tu nuevo espacio</span>
+                    </div>
+                    
+                    <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white leading-tight mb-8 font-sora">
+                        Descubre un mundo hecho para ti en <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400 dark:from-[var(--color-primary)] dark:to-emerald-400">Axioma</span>
                     </h1>
-
-                    <p className="mt-6 max-w-3xl text-lg md:text-xl text-slate-600 leading-relaxed">
-                        Centraliza usuarios, sesiones y auditoria en una sola experiencia. Disenada para operar rapido,
-                        reducir errores y mantener una trazabilidad profesional en cada accion.
+                    
+                    <p className="text-xl md:text-2xl text-slate-600 dark:text-zinc-400 leading-relaxed mb-12">
+                        Imagina un rincón acogedor donde tus pensamientos, tus ideas, tu arte y tu voz importan. Un mini-blog donde puedes ser tú mismo y compartir eso que te hace único de una manera súper sencilla.
                     </p>
 
-                    <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                    {isAuthenticated ? (
-                        <Link 
-                            to="/dashboard" 
-                            className="px-8 py-4 bg-cyan-700 text-white hover:bg-cyan-800 rounded-xl font-semibold transition-all duration-300 text-lg shadow-lg hover:-translate-y-0.5"
-                        >
-                            Ir al Dashboard
-                        </Link>
-                    ) : (
-                        <>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+                        {isAuthenticated ? (
                             <Link 
-                                to="/login" 
-                                className="px-8 py-4 bg-cyan-700 text-white hover:bg-cyan-800 rounded-xl font-semibold transition-all duration-300 text-lg shadow-lg hover:-translate-y-0.5"
+                                to="/dashboard" 
+                                className="group flex items-center gap-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold text-lg hover:shadow-[0_0_30px_rgba(84,247,143,0.4)] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto justify-center"
                             >
-                                Iniciar Sesión
+                                Mi Espacio <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                             </Link>
-                            <Link 
-                                to="/register" 
-                                className="px-8 py-4 bg-white text-cyan-800 border border-cyan-200 hover:bg-cyan-50 rounded-xl font-semibold transition-all duration-300 text-lg"
-                            >
-                                Crear Cuenta
-                            </Link>
-                        </>
-                    )}
+                        ) : (
+                            <>
+                                <Link 
+                                    to="/register" 
+                                    className="group flex items-center justify-center gap-3 bg-[var(--color-primary)] text-black px-8 py-4 rounded-full font-bold text-lg hover:shadow-[0_0_30px_rgba(84,247,143,0.4)] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto"
+                                >
+                                    ¡Quiero unirme! <Heart className="w-5 h-5 fill-black group-hover:scale-110 transition-transform" />
+                                </Link>
+                                <Link 
+                                    to="/login" 
+                                    className="flex items-center justify-center bg-white dark:bg-zinc-800/50 text-slate-800 dark:text-white border border-slate-200 dark:border-zinc-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors w-full sm:w-auto"
+                                >
+                                    Ya soy parte
+                                </Link>
+                            </>
+                        )}
+                    </div>
                 </div>
 
-                    <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="rounded-2xl bg-white/90 p-5 border border-slate-100 shadow-sm">
-                            <h3 className="text-slate-900 font-bold">Control de Acceso</h3>
-                            <p className="text-slate-600 mt-2 text-sm">JWT con flujo seguro y recuperacion automatica de sesion.</p>
+                {/* Features Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
+                    {/* Feature 1 */}
+                    <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-slate-100 dark:border-zinc-800/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group">
+                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-primary)]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <Send className="w-7 h-7 text-emerald-600 dark:text-[var(--color-primary)]" />
                         </div>
-                        <div className="rounded-2xl bg-white/90 p-5 border border-slate-100 shadow-sm">
-                            <h3 className="text-slate-900 font-bold">Perfil Unificado</h3>
-                            <p className="text-slate-600 mt-2 text-sm">Datos del usuario autenticado servidos desde backend en tiempo real.</p>
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Expresa lo que sientes</h3>
+                        <p className="text-slate-600 dark:text-zinc-400">
+                            Escribe y publica posteos con total libertad. Sube una foto linda, cuenta tu día, y deja que los demás te lean en un ambiente amable.
+                        </p>
+                    </div>
+
+                    {/* Feature 2 */}
+                    <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-slate-100 dark:border-zinc-800/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group animation-delay-100">
+                        <div className="w-14 h-14 rounded-2xl bg-sky-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <MessagesSquare className="w-7 h-7 text-sky-600 dark:text-sky-400" />
                         </div>
-                        <div className="rounded-2xl bg-white/90 p-5 border border-slate-100 shadow-sm">
-                            <h3 className="text-slate-900 font-bold">Auditoria</h3>
-                            <p className="text-slate-600 mt-2 text-sm">Historial de sesiones para trazabilidad y cumplimiento operativo.</p>
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Conecta Enseguida</h3>
+                        <p className="text-slate-600 dark:text-zinc-400">
+                            No solo se trata de leer, ¡sino de conversar! Responde a las historias de los demás o envíales mensajes cuando te sientas inspirado.
+                        </p>
+                    </div>
+
+                    {/* Feature 3 */}
+                    <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-slate-100 dark:border-zinc-800/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group animation-delay-200">
+                        <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <Users className="w-7 h-7 text-amber-600 dark:text-amber-400" />
                         </div>
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Comunidad Positiva</h3>
+                        <p className="text-slate-600 dark:text-zinc-400">
+                            Cuidamos de tu experiencia para que Axioma siempre sea ese refugio de internet al que te da gusto volver todos los días.
+                        </p>
                     </div>
                 </div>
             </div>

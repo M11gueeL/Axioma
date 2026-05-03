@@ -69,7 +69,12 @@ const Login = () => {
                     </div>
 
                     <div>
-                        <label className="text-sm font-semibold text-slate-700">Contraseña</label>
+                        <div className="flex justify-between items-center">
+                            <label className="text-sm font-semibold text-slate-700">Contraseña</label>
+                            <Link to="/request-password-reset" className="text-sm font-medium text-cyan-700 hover:underline">
+                                ¿Olvidaste tu contraseña?
+                            </Link>
+                        </div>
                         <input
                             type="password"
                             name="password"

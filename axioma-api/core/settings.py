@@ -61,7 +61,6 @@ DEBUG = env('DEBUG')
 # ==========================================
 
 # 1. Leemos los orígenes permitidos desde el .env
-# Si hay varios, los separamos por comas. Por defecto, permitimos localhost.
 cors_origins_str = env('CORS_ALLOWED_ORIGINS', default='http://localhost:5173')
 
 # 2. Convertimos el string en una lista de Python

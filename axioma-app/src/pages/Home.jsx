@@ -58,7 +58,7 @@ const Home = () => {
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
                     {/* Feature 1 */}
-                    <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-slate-100 dark:border-zinc-800/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group">
+                    <div className="bg-white/60 dark:bg-[var(--color-dark-card)]/40 backdrop-blur-xl border border-slate-100 dark:border-[var(--color-dark-border)]/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group">
                         <div className="w-14 h-14 rounded-2xl bg-[var(--color-primary)]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Send className="w-7 h-7 text-emerald-600 dark:text-[var(--color-primary)]" />
                         </div>
@@ -69,7 +69,7 @@ const Home = () => {
                     </div>
 
                     {/* Feature 2 */}
-                    <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-slate-100 dark:border-zinc-800/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group animation-delay-100">
+                    <div className="bg-white/60 dark:bg-[var(--color-dark-card)]/40 backdrop-blur-xl border border-slate-100 dark:border-[var(--color-dark-border)]/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group animation-delay-100">
                         <div className="w-14 h-14 rounded-2xl bg-sky-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <MessagesSquare className="w-7 h-7 text-sky-600 dark:text-sky-400" />
                         </div>
@@ -80,7 +80,7 @@ const Home = () => {
                     </div>
 
                     {/* Feature 3 */}
-                    <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-slate-100 dark:border-zinc-800/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group animation-delay-200">
+                    <div className="bg-white/60 dark:bg-[var(--color-dark-card)]/40 backdrop-blur-xl border border-slate-100 dark:border-[var(--color-dark-border)]/80 p-8 rounded-3xl hover:-translate-y-2 hover:shadow-[0_15px_30px_-15px_rgba(84,247,143,0.2)] transition-all duration-300 group animation-delay-200">
                         <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Users className="w-7 h-7 text-amber-600 dark:text-amber-400" />
                         </div>

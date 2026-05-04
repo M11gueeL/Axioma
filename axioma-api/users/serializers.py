@@ -23,7 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password_confirmation']
+        fields = ['username', 'email', 'password', 'password_confirmation', 'first_name', 'last_name', 'phone_number', 'birth_date']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirmation']:
@@ -42,13 +42,18 @@ class RegisterSerializer(serializers.ModelSerializer):
         verify_link = f"http://localhost:5173/verify-email/{uid}/{token}/"
         
         # Send confirmation email
-        send_mail(
-            subject="Verify your Email",
-            message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
-            from_email=None,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
+        try:
+            send_mail(
+                subject="Verify your Email",
+                message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
+                from_email=None,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            # Imprimimos el error y el enlace por consola por si falla el envío de correo de gmail
+            print(f"Error al enviar el correo: {e}")
+            print(f"ENLACE DE VERIFICACIÓN: {verify_link}")
         
         return user
 

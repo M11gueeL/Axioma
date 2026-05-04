@@ -52,7 +52,7 @@ function App() {
                             </Route>
 
                             {/* Catch all para rutas no encontradas (404) */}
-                            <Route path="*" element={<div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-2xl">404 - Página no encontrada</div>} />
+                            <Route path="*" element={<div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-[var(--color-dark-card)] text-zinc-800 dark:text-zinc-200 text-2xl">404 - Página no encontrada</div>} />
                         </Routes>
                     </main>
                 </div>

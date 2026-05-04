@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { requestPasswordReset } from '../../api/authApi';
+import { KeySquare, Mail, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const RequestPasswordReset = () => {
     const [email, setEmail] = useState('');
@@ -29,43 +30,80 @@ const RequestPasswordReset = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="p-8 bg-white rounded-lg shadow-md max-w-md w-full">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Recuperar Contraseña</h2>
-                
-                {message && <div className="bg-green-100 text-green-700 p-4 rounded-md mb-4 text-sm">{message}</div>}
-                {error && <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 text-sm">{error}</div>}
-                
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-1" htmlFor="email">
-                            Correo Electrónico
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Introduce tu correo"
-                        />
+        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center relative overflow-hidden py-12 px-4 transition-colors duration-300">
+            {/* Background Effects */}
+            <div className="pointer-events-none absolute top-10 -right-20 w-[300px] h-[300px] rounded-full bg-[var(--color-primary)]/10 blur-3xl animate-pulse" />
+            <div className="pointer-events-none absolute bottom-1/4 -left-20 w-[400px] h-[400px] rounded-full bg-emerald-400/10 blur-3xl animate-pulse animation-delay-200" />
+
+            <div className="w-full max-w-md relative z-10 animate-fade-up">
+                <div className="bg-white dark:bg-[var(--color-dark-card)] border border-slate-200 dark:border-[var(--color-dark-border)] rounded-3xl shadow-xl p-8 backdrop-blur-xl overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-50" />
+                    
+                    <div className="text-center mb-8">
+                        <div className="w-16 h-16 bg-[var(--color-primary)]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+                            <KeySquare className="w-8 h-8 text-emerald-600 dark:text-[var(--color-primary)]" />
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white font-sora tracking-tight">Recuperar Clave</h2>
+                        <p className="text-slate-500 dark:text-zinc-400 mt-2 font-medium">Ingresa tu correo para recibir un enlace de recuperación.</p>
                     </div>
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className={`w-full py-2 px-4 shadow-sm text-white font-bold rounded-md transition duration-200 ${
-                            isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                        }`}
-                    >
-                        {isLoading ? 'Enviando...' : 'Enviar Enlace'}
-                    </button>
-                </form>
                 
-                <div className="mt-6 text-center">
-                    <Link to="/login" className="text-sm font-medium text-blue-600 hover:underline">
-                        Volver al inicio de sesión
-                    </Link>
+                    {message && (
+                        <div className="rounded-xl border border-emerald-200/50 bg-emerald-50 dark:bg-emerald-500/10 px-4 py-3 mb-6 text-emerald-700 dark:text-[var(--color-primary)] text-sm flex items-start gap-3">
+                            <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+                            <span>{message}</span>
+                        </div>
+                    )}
+                    
+                    {error && (
+                        <div className="rounded-xl border border-red-200/50 bg-red-50 dark:bg-red-500/10 px-4 py-3 mb-6 text-red-600 dark:text-red-400 text-sm flex items-start gap-3">
+                            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                            <span>{error}</span>
+                        </div>
+                    )}
+                    
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-zinc-300 mb-2">Correo Electrónico</label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Mail className="h-5 w-5 text-slate-400 dark:text-zinc-500 group-focus-within:text-[var(--color-primary)] transition-colors" />
+                                </div>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    required
+                                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-[var(--color-dark-bg)] border border-slate-200 dark:border-[var(--color-dark-border)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 font-medium"
+                                    value={email}
+                                    placeholder="juan@ejemplo.com"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="group relative w-full flex justify-center items-center gap-2 bg-[var(--color-primary)] text-black font-bold py-4 px-8 rounded-xl hover:brightness-110 shadow-[0_0_20px_rgba(84,247,143,0.2)] hover:shadow-[0_0_30px_rgba(84,247,143,0.4)] disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 hover:-translate-y-0.5"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    Enviando enlace...
+                                </>
+                            ) : (
+                                <>
+                                    <KeySquare className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    Recuperar Contraseña
+                                </>
+                            )}
+                        </button>
+                    </form>
+                    
+                    <div className="mt-8 text-center">
+                        <Link to="/login" className="text-emerald-600 dark:text-[var(--color-primary)] font-bold hover:underline underline-offset-4">
+                            Volver al inicio de sesión
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

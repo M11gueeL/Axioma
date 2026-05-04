@@ -5,9 +5,11 @@
 
 @theme {
   --color-primary: #54F78F;
-  --color-dark-bg: #09090b;
-  --color-dark-card: #18181b;
-  --color-dark-border: #27272a;
+  --color-primary-dark: #2EA85C;
+  --color-primary-light: #D1FBE0;
+  --color-dark-bg: #0B1120;
+  --color-dark-card: #1E293B;
+  --color-dark-border: #334155;
 }
 
 :root {

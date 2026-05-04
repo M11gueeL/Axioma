@@ -209,3 +209,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Permite que el frontend envíe cookies o tokens de autorización
 CORS_ALLOW_CREDENTIALS = True
+
+# URL del Frontend para enlaces dinámicos (Emails, etc.)
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')

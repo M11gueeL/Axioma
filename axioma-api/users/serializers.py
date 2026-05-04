@@ -1,3 +1,4 @@
+import threading
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -5,8 +6,29 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from .models import LoginHistory
+from django.conf import settings
 
 User = get_user_model()
+
+class EmailThread(threading.Thread):
+    def __init__(self, subject, message, from_email, recipient_list):
+        self.subject = subject
+        self.message = message
+        self.from_email = from_email
+        self.recipient_list = recipient_list
+        threading.Thread.__init__(self)
+
+    def run(self):
+        try:
+            send_mail(
+                self.subject,
+                self.message,
+                self.from_email,
+                self.recipient_list,
+                fail_silently=True, # Importante para que no tumbe el hilo si falla
+            )
+        except Exception as e:
+            print(f"Error enviando correo en hilo: {e}")
 
 class UserSerializer(serializers.ModelSerializer):
     """Para mostrar datos del usuario"""
@@ -33,28 +55,27 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Quitamos password_confirmation porque create_user no lo usa
         validated_data.pop('password_confirmation')
-        # Usamos create_user para que Django encripte la contraseña automáticamente
+        
+        # Usamos create_user para que Django encripte la contraseña
         user = User.objects.create_user(**validated_data)
         
         # Email verification setup
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        verify_link = f"http://localhost:5173/verify-email/{uid}/{token}/"
+        verify_link = f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}/"
         
-        # Send confirmation email
-        try:
-            send_mail(
-                subject="Verify your Email",
-                message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
-                from_email=None,
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
-        except Exception as e:
-            # Imprimimos el error y el enlace por consola por si falla el envío de correo de gmail
-            print(f"Error al enviar el correo: {e}")
-            print(f"ENLACE DE VERIFICACIÓN: {verify_link}")
+        # Simular ruta del frontend dinámicamente
+        reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/" 
         
+        # Lanzamos el envío de correo en un hilo en segundo plano
+        EmailThread(
+            subject="Verify your Email",
+            message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
+            from_email=None,
+            recipient_list=[user.email]
+        ).start()
+        
+        # Retornamos el usuario inmediatamente a React
         return user
 
 class LoginHistorySerializer(serializers.ModelSerializer):
@@ -181,3 +202,5 @@ class VerifyEmailSerializer(serializers.Serializer):
         # Cambiar el estado del usuario a verificado
         user.is_email_verified = True
         user.save()
+
+        

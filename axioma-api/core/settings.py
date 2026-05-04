@@ -63,15 +63,8 @@ DEBUG = env('DEBUG')
 # URL del Frontend para enlaces dinámicos (Emails, etc.)
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 
-# CORS
-cors_origins_str = env('CORS_ALLOWED_ORIGINS', default='http://localhost:5173')
-
-CORS_ALLOWED_ORIGINS = [
-    origin.strip().rstrip('/') 
-    for origin in cors_origins_str.split(',') 
-    if origin.strip()
-]
-
+# CORS: Permitir TODO (Modo Desarrollo/Práctico)
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 # ==========================================

@@ -57,23 +57,21 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEBUG = env('DEBUG')
 
 # ==========================================
-# CONFIGURACIÓN DE CORS
+# CONFIGURACIÓN DE CORS Y FRONTEND URL
 # ==========================================
 
-# 1. Leemos los orígenes permitidos desde el .env
+# URL del Frontend para enlaces dinámicos (Emails, etc.)
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
+
+# CORS
 cors_origins_str = env('CORS_ALLOWED_ORIGINS', default='http://localhost:5173')
 
-# 2. Convertimos el string en una lista a prueba de balas:
-# - split(',') separa por comas
-# - strip() quita espacios en blanco accidentales
-# - rstrip('/') elimina las barras diagonales al final que rompen la librería
 CORS_ALLOWED_ORIGINS = [
     origin.strip().rstrip('/') 
     for origin in cors_origins_str.split(',') 
     if origin.strip()
 ]
 
-# Permite que el frontend envíe cookies o tokens de autorización
 CORS_ALLOW_CREDENTIALS = True
 
 # ==========================================
@@ -218,15 +216,3 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # El token de rescate dura 1 día
     'AUTH_HEADER_TYPES': ('Bearer',),               # El prefijo que usaremos en Postman/React
 }
-
-# ==========================================
-# CONFIGURACIÓN DE CORS
-# ==========================================
-# Permite que cualquier dominio (como tu localhost de React) consuma la API
-CORS_ALLOW_ALL_ORIGINS = True
-
-# Permite que el frontend envíe cookies o tokens de autorización
-CORS_ALLOW_CREDENTIALS = True
-
-# URL del Frontend para enlaces dinámicos (Emails, etc.)
-FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')

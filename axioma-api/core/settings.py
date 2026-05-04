@@ -67,6 +67,8 @@ FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+ALLOWED_HOSTS = ['*']
+
 # ==========================================
 # EMAIL SMTP CONFIGURATION FOR GMAIL
 # ==========================================

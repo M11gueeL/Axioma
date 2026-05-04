@@ -63,8 +63,15 @@ DEBUG = env('DEBUG')
 # 1. Leemos los orígenes permitidos desde el .env
 cors_origins_str = env('CORS_ALLOWED_ORIGINS', default='http://localhost:5173')
 
-# 2. Convertimos el string en una lista de Python
-CORS_ALLOWED_ORIGINS = cors_origins_str.split(',')
+# 2. Convertimos el string en una lista a prueba de balas:
+# - split(',') separa por comas
+# - strip() quita espacios en blanco accidentales
+# - rstrip('/') elimina las barras diagonales al final que rompen la librería
+CORS_ALLOWED_ORIGINS = [
+    origin.strip().rstrip('/') 
+    for origin in cors_origins_str.split(',') 
+    if origin.strip()
+]
 
 # Permite que el frontend envíe cookies o tokens de autorización
 CORS_ALLOW_CREDENTIALS = True

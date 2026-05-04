@@ -56,7 +56,19 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+# ==========================================
+# CONFIGURACIÓN DE CORS
+# ==========================================
+
+# 1. Leemos los orígenes permitidos desde el .env
+# Si hay varios, los separamos por comas. Por defecto, permitimos localhost.
+cors_origins_str = env('CORS_ALLOWED_ORIGINS', default='http://localhost:5173')
+
+# 2. Convertimos el string en una lista de Python
+CORS_ALLOWED_ORIGINS = cors_origins_str.split(',')
+
+# Permite que el frontend envíe cookies o tokens de autorización
+CORS_ALLOW_CREDENTIALS = True
 
 # ==========================================
 # EMAIL SMTP CONFIGURATION FOR GMAIL

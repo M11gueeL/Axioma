@@ -1,4 +1,3 @@
-import threading
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -9,26 +8,6 @@ from .models import LoginHistory
 from django.conf import settings
 
 User = get_user_model()
-
-class EmailThread(threading.Thread):
-    def __init__(self, subject, message, from_email, recipient_list):
-        self.subject = subject
-        self.message = message
-        self.from_email = from_email
-        self.recipient_list = recipient_list
-        threading.Thread.__init__(self)
-
-    def run(self):
-        try:
-            send_mail(
-                self.subject,
-                self.message,
-                self.from_email,
-                self.recipient_list,
-                fail_silently=True, # Importante para que no tumbe el hilo si falla
-            )
-        except Exception as e:
-            print(f"Error enviando correo en hilo: {e}")
 
 class UserSerializer(serializers.ModelSerializer):
     """Para mostrar datos del usuario"""
@@ -67,13 +46,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Simular ruta del frontend dinámicamente
         reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/" 
         
-        # Lanzamos el envío de correo en un hilo en segundo plano
-        EmailThread(
-            subject="Verify your Email",
-            message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
-            from_email=None,
-            recipient_list=[user.email]
-        ).start()
+        # Usamos try/except para el envío de correo de manera sincrónica asegurando que se procese
+        try:
+            send_mail(
+                subject="Verify your Email",
+                message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
+                from_email=None,
+                recipient_list=[user.email],
+                fail_silently=False
+            )
+        except Exception as e:
+            print(f"Error enviando el correo de verificación: {e}")
         
         # Retornamos el usuario inmediatamente a React
         return user

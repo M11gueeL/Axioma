@@ -66,7 +66,7 @@ const Register = () => {
             };
 
             await registerUser(payload);
-            navigate('/login', { state: { message: 'Registro exitoso. Por favor revisa tu correo electrónico (o la consola de Django si estás en desarrollo) para el enlace de verificación antes de iniciar sesión.' } });
+            navigate('/login', { state: { message: 'Registro exitoso. Por favor revisa tu correo electrónico para acceder al enlace de verificación antes de iniciar sesión.' } });
         } catch (err) {
             const backendErrors = err.response?.data;
             setError(backendErrors ? Object.values(backendErrors).flat()[0] : 'Error en el registro');

@@ -1,3 +1,4 @@
+import threading
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -8,6 +9,28 @@ from .models import LoginHistory
 from django.conf import settings
 
 User = get_user_model()
+
+class EmailThread(threading.Thread):
+    def __init__(self, subject, message, from_email, recipient_list):
+        self.subject = subject
+        self.message = message
+        self.from_email = from_email
+        self.recipient_list = recipient_list
+        threading.Thread.__init__(self)
+
+    def run(self):
+        try:
+            print(f"Arrancando hilo para enviar correo a {self.recipient_list}")
+            send_mail(
+                self.subject,
+                self.message,
+                self.from_email,
+                self.recipient_list,
+                fail_silently=False
+            )
+            print(f"Correo enviado exitosamente a {self.recipient_list}")
+        except Exception as e:
+            print(f"Error crítico enviando correo en hilo: {e}")
 
 class UserSerializer(serializers.ModelSerializer):
     """Para mostrar datos del usuario"""
@@ -46,17 +69,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Simular ruta del frontend dinámicamente
         reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/" 
         
-        # Usamos try/except para el envío de correo de manera sincrónica asegurando que se procese
-        try:
-            send_mail(
-                subject="Verify your Email",
-                message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
-                from_email=None,
-                recipient_list=[user.email],
-                fail_silently=False
-            )
-        except Exception as e:
-            print(f"Error enviando el correo de verificación: {e}")
+        # Lanzamos el envío de correo en un hilo en segundo plano (para no bloquear en producción como Render)
+        EmailThread(
+            subject="Verify your Email",
+            message=f"Welcome! Please verify your email address by clicking the link below:\n\n{verify_link}",
+            from_email=None,
+            recipient_list=[user.email]
+        ).start()
         
         # Retornamos el usuario inmediatamente a React
         return user
@@ -181,6 +200,10 @@ class VerifyEmailSerializer(serializers.Serializer):
         # Verificar matemáticamente que el hash (token) pertenece al usuario y es válido
         if not default_token_generator.check_token(user, token):
             raise serializers.ValidationError({"token": "The verification token is invalid or has expired."})
+            
+        # ¡AQUÍ ESTABAN LOS DAÑOS! El código terminaba la validación, pero nunca actualizaba la Base de Datos.
+        user.is_email_verified = True
+        user.save()
 
         # Cambiar el estado del usuario a verificado
         user.is_email_verified = True
